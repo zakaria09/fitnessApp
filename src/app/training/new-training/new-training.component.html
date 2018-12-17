@@ -1,0 +1,21 @@
+<section class="current-training" fxLayout fxLayoutAlign="center">
+    <mat-card fxFlex.xs="100%" fxFlex="400px">
+      <mat-card-title fxLayoutAlign="center">Current Workout</mat-card-title>
+      <mat-card-content fxLayoutAlign="center">
+        <mat-form-field>
+            <mat-select placeholder="Favorite food">
+            <mat-option *ngFor="let food of foods" [value]="food.value">
+                {{food.viewValue}}
+            </mat-option>
+            </mat-select>
+        </mat-form-field>
+  
+          <p>You selected: {{selected}}</p>
+      </mat-card-content>
+      <mat-card-actions fxLayoutAlign="center">
+        <button type="submit" mat-button>Start</button>
+      </mat-card-actions>
+    </mat-card>
+  </section>
+  
+  
