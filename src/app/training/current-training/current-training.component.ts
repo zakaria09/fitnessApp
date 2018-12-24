@@ -6,16 +6,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./current-training.component.css']
 })
 export class CurrentTrainingComponent implements OnInit {
+  progress = 0;
+  timer;
 
   constructor() { }
 
   ngOnInit() {
+    this.timer = setInterval(() => {
+      this.progress = this.progress + 20;
+      if(this.progress >= 100) {
+        clearInterval(this.timer);
+      }
+    }, 1000)
   }
 
-  food = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
-  ];
+  onStop() {
+    clearInterval(this.timer);
+  }
 
 }
