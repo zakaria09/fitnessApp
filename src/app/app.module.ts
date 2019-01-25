@@ -15,7 +15,8 @@ import { NewTrainingComponent } from './training/new-training/new-training.compo
 import { PastTrainingComponent } from './training/past-training/past-training.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HeaderComponent } from './nav/header/header.component';
-import { SidenavListComponent } from './nav/sidenav-list/sidenav-list.component'
+import { SidenavListComponent } from './nav/sidenav-list/sidenav-list.component';
+import { StopTrainingComponent } from './training/current-training/stop-training.component'
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { SidenavListComponent } from './nav/sidenav-list/sidenav-list.component'
     PastTrainingComponent,
     WelcomeComponent,
     HeaderComponent,
-    SidenavListComponent
+    SidenavListComponent,
+    StopTrainingComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +43,7 @@ import { SidenavListComponent } from './nav/sidenav-list/sidenav-list.component'
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [StopTrainingComponent]
 })
 export class AppModule { }
