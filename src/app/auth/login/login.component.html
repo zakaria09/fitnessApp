@@ -3,7 +3,8 @@
   fxLayout="column" 
   fxLayoutAlign="center center" 
   fxLayoutGap="10px" 
-  [formGroup]="loginForm">
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit()">
     <mat-form-field>
       <input 
       type="email" 
