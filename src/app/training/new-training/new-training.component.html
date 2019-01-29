@@ -3,9 +3,9 @@
       <mat-card-title fxLayoutAlign="center">New Workout</mat-card-title>
       <mat-card-content fxLayoutAlign="center">
         <mat-form-field>
-            <mat-select placeholder="Choose your exercise" [(ngModel)]="selected">
-            <mat-option *ngFor="let food of foods" [value]="food.value">
-                {{food.viewValue}}
+            <mat-select placeholder="Choose your exercise">
+            <mat-option *ngFor="let exercise of exercises" [value]="exercise.id">
+                {{ exercise.name }}
             </mat-option>
             </mat-select>
         </mat-form-field>
