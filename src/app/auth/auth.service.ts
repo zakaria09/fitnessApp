@@ -6,6 +6,9 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
+    // observable array
+    // the header component is subscribing to the 
+    // auth change array
     authChange = new Subject<boolean>();
     private user: User;
 
