@@ -1,20 +1,42 @@
 import { Exercise } from './exercise.model';
 import { Subject } from 'rxjs/Subject'
+import { AngularFirestore } from '@angular/fire/firestore';
+import 'rxjs/add/operator/map'
+import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription'
 
+@Injectable()
 export class TrainingService {
     exerciseChanged = new Subject<Exercise>();
-    private availableExercises: Exercise[] = [
-        { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
-        { id: 'touch-toes', name: 'Touch Toes', duration: 180, calories: 15 },
-        { id: 'side-lunges', name: 'Side Lunges', duration: 120, calories: 18 },
-        { id: 'burpees', name: 'Burpees', duration: 60, calories: 8 }
-    ];
+    exericesChanged = new Subject<Exercise[]>();
+    finishedExercisesOrChanged = new Subject<Exercise[]>();
+    private availableExercises: Exercise[] = [];
     private runningExercise: Exercise;
-    private exercise: Exercise[] = [];
+    private fbSubs: Subscription[] = [];
 
-    getAvailableExercises() {
-        return this. availableExercises.slice();
+    constructor(private db: AngularFirestore) {}
+
+    fetchAvailableExercises() {
+        this.fbSubs.push(this.db
+            .collection('availableExercises')
+            .snapshotChanges()
+            .map(docArray => {
+                return docArray.map(doc => {
+                    return {
+                        id: doc.payload.doc.id,
+                        name: doc.payload.doc.data()['name'],
+                        duration: doc.payload.doc.data()['duration'],
+                        calories: doc.payload.doc.data()['calories']
+                    };
+                });
+            }).subscribe((exercise: Exercise[]) => {
+                this.availableExercises = exercise,
+                this.exericesChanged.next([...this.availableExercises])
+            }));
     }
+
+    // https://www.udemy.com/angular-full-app-with-angular-material-angularfire-ngrx/learn/v4/questions/5588112
+    // issues with typscript type operator 
 
     startExercise(selectedId: string) {
         const selectedExercise = this.availableExercises.find(ex => ex.id === selectedId);
@@ -23,7 +45,7 @@ export class TrainingService {
     }
 
     completeExercise() {
-        this.exercise.push({
+        this.addDateToDatabase({
             ...this.runningExercise, 
             date: new Date(), 
             state: 'completed'
@@ -33,7 +55,7 @@ export class TrainingService {
     }
 
     cancelExercise(progress: number) {
-        this.exercise.push({
+        this.addDateToDatabase({
             ...this.runningExercise,
             duration: this.runningExercise.duration / (progress * 100),
             calories: this.runningExercise.calories / (progress * 100),
@@ -48,7 +70,20 @@ export class TrainingService {
         return { ...this.runningExercise };
     }
 
-    getExercises() {
-        return [...this.exercise];
+    fetchCompletedOrFishedExercises() {
+        this.fbSubs.push(this.db
+        .collection('finishedExercises')
+        .valueChanges()
+        .subscribe((exercises: Exercise[]) => {
+            this.finishedExercisesOrChanged.next(exercises);
+        }));
+    }
+
+    cancelSubscriptions() {
+        this.fbSubs.forEach(sub => sub.unsubscribe());
+    }
+
+    private addDateToDatabase(exercise : Exercise) {
+        this.db.collection('finishedExercises').add(exercise);
     }
 }
