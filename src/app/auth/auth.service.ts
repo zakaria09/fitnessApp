@@ -5,6 +5,8 @@ import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { TrainingService } from '../training/training.service';
+import { MatSnackBar } from '@angular/material';
+import { UiService } from '../shared/ui-service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,9 @@ export class AuthService {
 
     constructor(private router: Router,
                 private afAuth: AngularFireAuth, 
-                private trainingservice:TrainingService) {}
+                private trainingservice:TrainingService,
+                private snackbar: MatSnackBar,
+                private uiservice: UiService) {}
 
     initAuthListener() {
         this.afAuth.authState.subscribe(user => {
@@ -34,30 +38,36 @@ export class AuthService {
     }
 
     register(authData: AuthData) {
+        this.uiservice.loadingStateChange.next(true);
         this.afAuth.auth.createUserWithEmailAndPassword(
             authData.email,
             authData.password)
             .then(result => {
-                console.log(result);
-                this.succcesfullLogin();
+                this.uiservice.loadingStateChange.next(false);
             })
             .catch(err => {
-                console.log(err);
+                this.uiservice.loadingStateChange.next(false);
+                this.snackbar.open(err.message, null, {
+                    duration: 3000
+                });
             });
         this.authChange.next(true);
         
     }
 
     login(authData: AuthData) {
+        this.uiservice.loadingStateChange.next(true);
         this.afAuth.auth.signInWithEmailAndPassword(
             authData.email, 
             authData.password)
                 .then(result => {
-                    console.log(result);
-                    this.succcesfullLogin();
+                    this.uiservice.loadingStateChange.next(false);
                 })
                 .catch(err => {
-                    console.log(err)
+                    this.uiservice.loadingStateChange.next(false);
+                    this.snackbar.open(err.message, null, {
+                        duration: 3000
+                    });
                 });
         this.authChange.next(true);
     }
@@ -68,9 +78,5 @@ export class AuthService {
 
     isAuth() {
         return this.isAuthenticated;
-    }
-
-    private succcesfullLogin() {
-
     }
 }

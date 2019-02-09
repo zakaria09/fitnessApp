@@ -12,12 +12,16 @@ import { Observable, Subscription } from 'rxjs'
 export class NewTrainingComponent implements OnInit, OnDestroy {
   exercises: Exercise[];
   exerciseSubscription: Subscription;
+  isLoading = true;
 
   constructor(private trainingservice: TrainingService) { }
 
   ngOnInit() {
     this.exerciseSubscription = this.trainingservice.exericesChanged.subscribe(
-      exercises => this.exercises = exercises
+      exercises => {
+        this.isLoading = false;
+        this.exercises = exercises;
+      }
       );
     this.trainingservice.fetchAvailableExercises();
   }
