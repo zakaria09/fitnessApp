@@ -12,7 +12,6 @@
           </mat-form-field>
           <mat-spinner *ngIf="isLoading"></mat-spinner>
         </mat-card-content>
-        <p fxLayoutAlign="center">You selected: {{selected}}</p>
         <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
           <button type="submit" mat-button [disabled]="f.invalid">Start</button>
         </mat-card-actions>
